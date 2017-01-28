@@ -31,11 +31,11 @@ function requestHandler (request , response) {
             </ServerRouter>
         )
     }
-
+    response.setHeader('Content-type', 'text/html');
     response.write(
         renderToStaticMarkup(<Layout title="Aplicacion" content={html}/>)
     );
-    response.setHeader('Content-type', 'text/html');
+    
     response.end();
 }
 

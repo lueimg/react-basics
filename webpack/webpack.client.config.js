@@ -2,7 +2,7 @@ module.exports = {
     entry: './source/client.js',
     output: {
         filename: 'app.js',
-        path:'./build/client',
+        path:'./build/statics',
     },
     module: {
         loaders: [

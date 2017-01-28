@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "bff": "node build/server/index.js",
+    "sfs": "list ./build/statics --port 3001 --cache 0"
   },
   "author": "",
   "license": "ISC",
@@ -23,6 +25,7 @@
     "babel-preset-latest-minimal": "^1.1.2",
     "babel-preset-react": "^6.22.0",
     "json-loader": "^0.5.4",
+    "list": "^0.9.5",
     "webpack": "^1.14.0"
   }
 }
