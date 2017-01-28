@@ -6,7 +6,8 @@ class Home extends Component {
         return (
             <section name="Home">
             <h1>Home</h1>
-            <Link to="/About"> Go to About</Link>
+            <Link to="/post"> Go to post</Link>
+            <Link to="/profile"> Go to profile</Link>
              </section>
         );
     } 
