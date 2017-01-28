@@ -3,6 +3,8 @@ import { Link } from 'react-router';
 
 import api from '../../api.js';
 import Post from '../../posts/containers/Post.jsx';
+import Loading from '../../shared/components/Loading.jsx';
+
 
 class Home extends Component {
     constructor (props) {
@@ -27,16 +29,16 @@ class Home extends Component {
     
 
     render() {
+
         return (
             <section name="Home">
-            <section>
-                {this.state.loading && (
-                    <h2>Loading posts....</h2>)}
-                {this.state.posts.map(post => <Post key={post.id} {...post} />)}
-            </section>
-            <h1>Home</h1>
-            <Link to="/about"> Go to about</Link>
-            <Link to="/random"> Go to random</Link>
+                <section>
+                    {this.state.loading && (
+                        <Loading />)}
+                    {this.state.posts.map(post => <Post key={post.id} {...post} />)}
+                </section>
+                <h1>Home</h1>
+            
              </section>
         );
     } 
