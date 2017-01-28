@@ -1,15 +1,13 @@
 import http from 'http';
 import React from 'react';
-import { renderToString } from 'react-dom/server'
+import { renderToString, renderToStaticMarkup } from 'react-dom/server'
 import { createServerRenderContext, ServerRouter } from 'react-router';
 
 import Pages from './pages/containers/page.jsx';
+import Layout from './pages/components/Layout.jsx';
+
 
 function requestHandler (request , response) {
-    // const html = renderToString(
-    //     React.DOM.h1 (null, 'hola')
-    // );
-
     const context = createServerRenderContext();
 
     let html = renderToString(
@@ -17,18 +15,14 @@ function requestHandler (request , response) {
             <Pages />
         </ServerRouter>
     );
-
+    
     const result = context.getResult();
-
-    response.setHeader('Content-type', 'text/html');
-
     if (result.redirect) {
         response.writeHead(301, {
             Location: result.redirect.pathname
         });
         response.end();
     }
-
     if (result.missed) {
         response.writeHead(404);
         html = renderToString(
@@ -38,10 +32,12 @@ function requestHandler (request , response) {
         )
     }
 
-    response.write(html);
+    response.write(
+        renderToStaticMarkup(<Layout title="Aplicacion" content={html}/>)
+    );
+    response.setHeader('Content-type', 'text/html');
     response.end();
 }
 
 const server  = http.createServer(requestHandler);
-
 server.listen(3000)
