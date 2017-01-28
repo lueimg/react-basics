@@ -12,7 +12,42 @@
 <body>
 <div id="app"></div>
     <script type="text/babel">
-        
+
+        function Counter(WrappedComponent) {
+            class CounterHOC extends React.Component {
+                constructor(props) {
+                    super(props);
+                    this.state = {
+                        count: 0
+                    };
+                    this.handleClick = this.handleClick.bind(this);
+                }
+
+                handleClick() {
+                    this.setState({
+                        count: this.state.count + 1,
+                    })
+                }
+
+                getChildContext () {
+                    return {
+                        count: this.state.count,
+                    }
+                }
+
+                render () {
+                    return (
+                        <WrappedComponent onClick={this.handleClick} {...this.props} />
+                    )
+                }
+            }
+
+             CounterHOC.childContextTypes = {
+                count: React.PropTypes.number,
+            }
+            return CounterHOC;
+        }
+
         function Hola (props, context) {
             return (
                 <h1 id='Title' onClick={props.onClick}>  Hola {props.name} {context.count} </h1>
@@ -27,26 +62,21 @@
        class MiComponente extends React.Component {
            constructor(props) {
                super(props);
-
                this.state = {
                    count: 0
                };
-
                this.handleClick = this.handleClick.bind(this);
            }
-
            handleClick() {
                this.setState({
                    count: this.state.count + 1,
                })
            }
-
            getChildContext () {
                return {
                    count: this.state.count,
                }
            }
-
            render() {
                return (
                    <Hola name={this.props.name} count={this.state.count} onClick={this.handleClick} />
@@ -59,9 +89,11 @@
            count: React.PropTypes.number,
        }
 
+       const HolaHOC = Counter(Hola)
+
 
        ReactDOM.render(
-           <MiComponente name="Luis" />,
+           <HolaHOC name="Luis" />,
            document.getElementById('app')
        );
 
