@@ -11,21 +11,23 @@
 </head>
 <body>
 <div id="app"></div>
-    
-    
-
     <script type="text/babel">
-
-        function Hola (props) {
+        
+        function Hola (props, context) {
             return (
-                <h1 id='Title' onClick={props.onClick}>  Hola {props.name} {props.count} </h1>
+                <h1 id='Title' onClick={props.onClick}>  Hola {props.name} {context.count} </h1>
             );
         }
-        //const hola  = React.createElement(Hola, {name: 'luis',})
+
+        Hola.contextTypes = {
+            count: React.PropTypes.number
+        };
+      
 
        class MiComponente extends React.Component {
            constructor(props) {
                super(props);
+
                this.state = {
                    count: 0
                };
@@ -39,12 +41,22 @@
                })
            }
 
-           render() {
+           getChildContext () {
+               return {
+                   count: this.state.count,
+               }
+           }
 
+           render() {
                return (
                    <Hola name={this.props.name} count={this.state.count} onClick={this.handleClick} />
                );
            }
+       }
+
+       // variables estaticas del container 
+       MiComponente.childContextTypes = {
+           count: React.PropTypes.number,
        }
 
 
