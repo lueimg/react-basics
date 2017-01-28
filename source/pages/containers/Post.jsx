@@ -5,7 +5,7 @@ import api from '../../api.js';
 // le damos otro nombrepara no tener conflictos
 import PostBody from '../../posts/containers/Post.jsx';
 import Loading from '../../shared/components/Loading.jsx';
-
+import Comment from '../../comments/containers/Comment.jsx'
 
 
 class Post extends Component {
@@ -51,7 +51,14 @@ class Post extends Component {
                     user={this.state.user}
                     comments={this.state.comments}
                      />
+                    <section>
+                    {this.state.comments.map(comment => (
+                        <Comment key={comment.id} {...comment} />
+                    ))}
+                </section>
             </section>
+
+            
         );
     } 
 }

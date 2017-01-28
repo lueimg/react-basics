@@ -47,6 +47,9 @@ class Post extends Component {
                         <span>
                             Hay {this.state.comments.length} comentarios
                         </span>
+
+                        
+
                     </div>)}
             </article>
         );
