@@ -36,33 +36,31 @@ class Home extends Component {
 
 
     handleScroll(event) {
-        if (this.state.loading) return null;
+    if(this.state.loading) return null;
 
-        console.log("Scrolling");
-        console.log(this.state.page);
+    const scrolled = window.scrollY;
+    const viewportHeight = window.innerHeight;
+    const fullHeight = document.body.clientHeight;
 
-        const scrolled = window.scrollY;
-        const viewportHeight = window.innerHeight;
-        const fullHeight = document.body.clientHeight;
-
-        if (!(scrolled + viewportHeight + 200 >= fullHeight)) return null;
-
-        this.setState({ loading: true }, async () => {
-            try {
-                const posts = await api.posts.getList(this.state.page);
-
-                this.setState({
-                    posts: this.state.posts.concat(posts),
-                    page: this.stage.page + 1,
-                    loading: false
-                });
-
-            } catch(error) {
-                console.log(error);
-                this.setState({loading: false})
-            }
-        })
+    if(!(scrolled + viewportHeight + 300 >= fullHeight)) {
+      return null
     }
+
+    this.setState({loading: true}, async () => {
+      try {
+        const posts = await api.posts.getList(this.state.page);
+
+        this.setState({
+          posts: this.state.posts.concat(posts),
+          page: this.state.page + 1,
+          loading: false,
+        })
+      } catch (error){
+        console.error(error);
+        this.setState({loading: false});
+      }
+    })
+  }
     
     
     render() {
