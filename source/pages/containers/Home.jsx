@@ -8,6 +8,7 @@ import Header from '../../shared/components/Header.jsx';
 import { connect } from 'react-redux';
 import actions from '../../actions';
 
+import { bindActionCreators } from 'redux';
 
 class Home extends Component {
     constructor (props) {
@@ -23,7 +24,8 @@ class Home extends Component {
     async componentDidMount() {
         const posts = await api.posts.getList(this.props.page);
 
-        this.props.dispatch(actions.setPost(posts));
+        // this.props.dispatch(actions.setPost(posts));
+        this.props.actions.setPost(posts);
 
         this.setState({ loading: false })
 
@@ -48,7 +50,8 @@ class Home extends Component {
     this.setState({loading: true}, async () => {
       try {
         const posts = await api.posts.getList(this.props.page);
-        this.props.dispatch(actions.setPost(posts));
+        // this.props.dispatch(actions.setPost(posts));
+        this.props.actions.setPost(posts);
         this.setState({ loading: false})
       } catch (error){
         console.error(error);
@@ -82,12 +85,10 @@ const mapStateToProps = (state) => {
     }
 }
 
-// const mapDispatchToProps = (dispatch, ownProps) => {
-//     return {
-//         dispatch: () => {
-//             dispatch(actionCreator)
-//         }
-//     }
-// }
+const mapDispatchToProps = (dispatch) => {
+    return {
+        actions: bindActionCreators(actions, dispatch)
+    }
+}
 
-export default connect(mapStateToProps)(Home);
+export default connect(mapStateToProps, mapDispatchToProps)(Home);

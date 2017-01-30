@@ -1,14 +1,7 @@
 import {createStore, applyMiddleware} from 'redux';
 import reducer from './reducer';
 
-
-// const logger (store) => {
-//     return (next) => {
-//         return (action) => {
-            
-//         }
-//     }
-// }
+import thunk from 'redux-thunk';
 
 const logger = store => next => action => {
     console.group('logger')
@@ -25,6 +18,7 @@ const store = createStore(
     reducer, 
     applyMiddleware(
         logger,
+        thunk,
     ))
 
 
