@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router';
-
 import api from '../../api.js';
 import Post from '../../posts/containers/Post.jsx';
 import Loading from '../../shared/components/Loading.jsx';
+import Header from '../../shared/components/Header.jsx';
+
+import { connect } from 'react-redux';
+import actions from '../../actions';
 
 
 class Home extends Component {
@@ -11,8 +14,6 @@ class Home extends Component {
         super(props)
 
         this.state = {
-            page: 1,
-            posts: [],
             loading: true
         };
 
@@ -20,13 +21,11 @@ class Home extends Component {
     }
 
     async componentDidMount() {
-        const posts = await api.posts.getList(this.state.page);
+        const posts = await api.posts.getList(this.props.page);
 
-        this.setState({
-            posts,
-            page: this.state.page + 1,
-            loading: false
-        })
+        this.props.dispatch(actions.setPost(posts));
+
+        this.setState({ loading: false })
 
         window.addEventListener('scroll', this.handleScroll);
     }
@@ -48,29 +47,26 @@ class Home extends Component {
 
     this.setState({loading: true}, async () => {
       try {
-        const posts = await api.posts.getList(this.state.page);
-
-        this.setState({
-          posts: this.state.posts.concat(posts),
-          page: this.state.page + 1,
-          loading: false,
-        })
+        const posts = await api.posts.getList(this.props.page);
+        this.props.dispatch(actions.setPost(posts));
+        this.setState({ loading: false})
       } catch (error){
         console.error(error);
         this.setState({loading: false});
       }
     })
   }
-    
-    
+
     render() {
 
         return (
+           
             <section name="Home">
+                <Header/>
                 <h1>Home</h1>
                 <section>
-                    {this.state.posts.map(post => <Post key={post.id} {...post} />)}
-                     {this.state.loading && (<Loading />)}
+                    {this.props.posts.map(post => <Post key={post.id} {...post} />)}
+                     {this.props.loading && (<Loading />)}
                 </section>
             
              </section>
@@ -78,4 +74,20 @@ class Home extends Component {
     } 
 }
 
-export default Home;
+// state from redux
+const mapStateToProps = (state) => {
+    return {
+        posts: state.posts.entities,
+        page: state.posts.page
+    }
+}
+
+// const mapDispatchToProps = (dispatch, ownProps) => {
+//     return {
+//         dispatch: () => {
+//             dispatch(actionCreator)
+//         }
+//     }
+// }
+
+export default connect(mapStateToProps)(Home);

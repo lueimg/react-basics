@@ -5,15 +5,18 @@ import { createServerRenderContext, ServerRouter } from 'react-router';
 
 import Pages from './pages/containers/page.jsx';
 import Layout from './pages/components/Layout.jsx';
-
+import {Provider} from 'react-redux';
+import store from './store';
 
 function requestHandler (request , response) {
     const context = createServerRenderContext();
 
     let html = renderToString(
-        <ServerRouter location={request.url} context={context}>
-            <Pages />
-        </ServerRouter>
+        <Provider store={store}>
+             <ServerRouter location={request.url} context={context}>
+                <Pages />
+            </ServerRouter>
+        </Provider>
     );
     
     const result = context.getResult();
