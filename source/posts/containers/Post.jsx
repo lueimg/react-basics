@@ -16,7 +16,7 @@ class Post extends Component {
     }
 
     async componentDidMount() {
-        if (!!this.props.user && !!this.props.comments) return this.setState({loading:false});
+        if (this.props.user && this.props.comments.size > 0) return this.setState({loading:false});
 
         await Promise.all([
             this.props.actions.loadUser(this.props.userId),
@@ -37,9 +37,9 @@ class Post extends Component {
                 {!this.state.loading && ( 
                     <div>
                     <Link to={`/user/${this.props.user.id}`}>{this.props.user.name}</Link>
-                        <a href={`${this.props.user.website}`} target="_blank"> {this.props.user.name}</a>
+                        <a href={`${this.props.user.get('website')}`} target="_blank"> {this.props.user.name}</a>
                         <span>
-                            Hay {this.props.comments.length} comentarios
+                            Hay {this.props.comments.size} comentarios
                         </span>
 
                         
@@ -60,8 +60,8 @@ Post.propTypes = {
 // props de componente
 const mapStateToProps = (state, props) => {
     return {
-        comments: state.comments.filter(comment => comment.postId === props.id),
-        user: state.users[props.userId]
+        comments: state.get('comments').filter(comment => comment.get('postId') === props.id),
+        user: state.get('users').get(props.userId)
     }
 }
 const mapDispatchToProps = (dispatch, ownProps) => {

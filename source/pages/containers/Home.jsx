@@ -61,7 +61,7 @@ class Home extends Component {
                 <Header/>
                 <h1>Home</h1>
                 <section>
-                    {this.props.posts.map(post => <Post key={post.id} {...post} />)}
+                    {this.props.posts.map(post => <Post key={post.get('id')} {...post.toJS()} />).toArray()}
                      {this.props.loading && (<Loading />)}
                 </section>
             
@@ -73,8 +73,8 @@ class Home extends Component {
 // state from redux
 const mapStateToProps = (state) => {
     return {
-        posts: state.posts.entities,
-        page: state.posts.page
+        posts: state.get('posts').get('entities'),
+        page: state.get('posts').get('page')
     }
 }
 
