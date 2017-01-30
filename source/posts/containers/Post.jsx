@@ -2,6 +2,9 @@ import React, {Component, PropTypes} from 'react';
 import {Link  } from 'react-router';
 
 import api from '../../api.js'
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import actions from '../../actions';
 
 class Post extends Component {
     constructor (props) {
@@ -9,27 +12,18 @@ class Post extends Component {
         
         this.state = {
             loading: true,
-            user: props.user || null,
-            comments: props.comments || null,
         }
     }
 
     async componentDidMount() {
-        if (!!this.state.user && !!this.state.comments) return this.setState({loading: false});
+        if (!!this.props.user && !!this.props.comments) return this.setState({loading:false});
 
-        const [
-            user,
-            comments
-        ] = await Promise.all([
-            !this.state.user ? api.users.getSingle(this.props.userId) : Promise.resolve(null),
-            !this.state.comments ? api.posts.getComments(this.props.id) : Promise.resolve(null),
+        await Promise.all([
+            this.props.actions.loadUser(this.props.userId),
+            this.props.actions.loadCommentForPost(this.props.id)
         ]);
 
-        this.setState({
-            loading: false,
-            user: user || this.state.user,
-            comments: comments || this.state.comments
-        })
+        this.setState({loading: false})
     }
     
     render() {
@@ -42,10 +36,10 @@ class Post extends Component {
                 <p>{this.props.body}</p>
                 {!this.state.loading && ( 
                     <div>
-                    <Link to={`/user/${this.state.user.id}`}>{this.state.user.name}</Link>
-                        <a href={`${this.state.user.website}`} target="_blank"> {this.state.user.name}</a>
+                    <Link to={`/user/${this.props.user.id}`}>{this.props.user.name}</Link>
+                        <a href={`${this.props.user.website}`} target="_blank"> {this.props.user.name}</a>
                         <span>
-                            Hay {this.state.comments.length} comentarios
+                            Hay {this.props.comments.length} comentarios
                         </span>
 
                         
@@ -62,6 +56,18 @@ Post.propTypes = {
     title: PropTypes.string,
     body: PropTypes.string,
 };
+// state del store
+// props de componente
+const mapStateToProps = (state, props) => {
+    return {
+        comments: state.comments.filter(comment => comment.postId === props.id),
+        user: state.users[props.userId]
+    }
+}
+const mapDispatchToProps = (dispatch, ownProps) => {
+    return {
+        actions: bindActionCreators(actions, dispatch)
+    }
+}
 
-
-export default Post;
+export default connect(mapStateToProps, mapDispatchToProps)(Post);
