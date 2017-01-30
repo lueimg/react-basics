@@ -22,13 +22,8 @@ class Home extends Component {
     }
 
     async componentDidMount() {
-        const posts = await api.posts.getList(this.props.page);
-
-        // this.props.dispatch(actions.setPost(posts));
-        this.props.actions.setPost(posts);
-
+        await this.props.actions.postNextPage();
         this.setState({ loading: false })
-
         window.addEventListener('scroll', this.handleScroll);
     }
     componentWillUnmount () {
@@ -49,9 +44,7 @@ class Home extends Component {
 
     this.setState({loading: true}, async () => {
       try {
-        const posts = await api.posts.getList(this.props.page);
-        // this.props.dispatch(actions.setPost(posts));
-        this.props.actions.setPost(posts);
+        await this.props.actions.postNextPage();
         this.setState({ loading: false})
       } catch (error){
         console.error(error);
